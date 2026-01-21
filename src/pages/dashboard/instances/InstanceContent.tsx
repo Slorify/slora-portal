@@ -6,7 +6,7 @@ import GitProvider from "./blocks/GitProvider";
 export function InstanceContent() {
   return (
     <Tabs defaultValue="preview">
-      <TabsList className="bg-sidebar w-full">
+      <TabsList className="bg-card w-full">
         <TabsTrigger value="preview">
           <AppWindowIcon />
           Setup

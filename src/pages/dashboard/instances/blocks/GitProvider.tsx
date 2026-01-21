@@ -1,14 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "@/components/ui/empty";
 import {
   Select,
   SelectContent,
@@ -16,112 +8,154 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { fetchGitApps, fetchGitRepos } from "@/utils/gitproviderApi";
-import { FolderGit2 } from "lucide-react";
 import { FaGithub } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
 
 const GitProvider = () => {
-  const navigate = useNavigate();
-  const pathname = "/dashboard/settings/gitapps";
-
   const [apps, setApps] = useState<any[]>([]);
-  const [selectedApp, setSelectedApp] = useState<any | null>(null);
   const [repos, setRepos] = useState<any[]>([]);
+
+  const [selectedAppId, setSelectedAppId] = useState<string>("");
+  const [selectedRepo, setSelectedRepo] = useState<any | null>(null);
+  const [branch, setBranch] = useState("");
+
+  const [repoSearch, setRepoSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
+  /* ---------------- LOAD APPS ---------------- */
   useEffect(() => {
-    const loadApps = async () => {
-      try {
-        const res = await fetchGitApps();
-        setApps(res.apps || []);
-      } finally {
-        setLoading(false);
-      }
+    const load = async () => {
+      const res = await fetchGitApps();
+      setApps(res || []);
+      setLoading(false);
     };
-    loadApps();
+    load();
   }, []);
 
-  const handleAppSelect = async (appId: string) => {
-    const app = apps.find((a) => a.id === Number(appId));
-    setSelectedApp(app);
+  /* ---------------- LOAD REPOS ON APP CHANGE ---------------- */
+  useEffect(() => {
+    if (!selectedAppId) return;
 
-    const res = await fetchGitRepos(app.app_id);
-    setRepos(res.repos || []);
+    const loadRepos = async () => {
+      const res = await fetchGitRepos(Number(selectedAppId));
+      setRepos(res || []);
+      setSelectedRepo(null);
+      setBranch("");
+      setRepoSearch("");
+    };
+
+    loadRepos();
+  }, [selectedAppId]);
+
+  /* ---------------- LIVE SEARCH ---------------- */
+  const filteredRepos = useMemo(() => {
+    if (!repoSearch) return repos;
+    return repos.filter((repo) =>
+      repo.full_name.toLowerCase().includes(repoSearch.toLowerCase()),
+    );
+  }, [repoSearch, repos]);
+
+  /* ---------------- HANDLERS ---------------- */
+  const handleRepoSelect = (value: string) => {
+    const repo = repos.find((r) => r.full_name === value);
+    setSelectedRepo(repo);
+    setBranch(repo?.default_branch || "");
+  };
+
+  const handleSave = () => {
+    console.log({
+      appId: selectedAppId,
+      repo: selectedRepo?.full_name,
+      branch,
+    });
   };
 
   return (
-    <Card className="w-7/9 self-center mx-auto">
-      <CardHeader className="flex gap-2 font-bold items-center">
+    <Card className="mx-auto w-9/10">
+      <CardHeader className="flex items-center gap-2 font-bold">
         <FaGithub size={20} />
-        Github Providers
+        Github Provider
       </CardHeader>
 
-      <CardContent>
-        {/* LOADING */}
-        {loading && <p className="text-muted-foreground">Loading...</p>}
+      <CardContent className="space-y-6">
+        <div>
+          <p className="mb-2 font-semibold">GitHub Account</p>
+          <Select
+            value={selectedAppId}
+            onValueChange={setSelectedAppId}
+            disabled={loading}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Choose GitHub App" />
+            </SelectTrigger>
+            <SelectContent>
+              {apps.map((app) => (
+                <SelectItem key={app.id} value={String(app.app_id)}>
+                  {app.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        {/* EMPTY STATE */}
-        {!loading && apps.length === 0 && (
-          <Empty>
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <FolderGit2 />
-              </EmptyMedia>
-              <EmptyTitle>No Git providers found.</EmptyTitle>
-              <EmptyDescription>
-                You haven't created any Github Provider App. Click below to
-                create one.
-              </EmptyDescription>
-            </EmptyHeader>
-            <EmptyContent>
-              <Button onClick={() => navigate(pathname)} variant="link">
-                Git Providers Settings
-              </Button>
-            </EmptyContent>
-          </Empty>
-        )}
+        <div className="flex w-full gap-5 ">
+          <div className="w-1/2">
+            <p className="mb-2 font-semibold">Repository</p>
+            <Select onValueChange={handleRepoSelect} disabled={!selectedAppId}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Choose Repository" />
+              </SelectTrigger>
 
-        {/* APP + REPO SELECT */}
-        {!loading && apps.length > 0 && (
-          <div className="grid grid-cols-2 gap-6">
-            {/* APP SELECT */}
-            <div>
-              <p className="mb-2 font-semibold">Select Git App</p>
-              <Select onValueChange={handleAppSelect}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose GitHub App" />
-                </SelectTrigger>
-                <SelectContent>
-                  {apps.map((app) => (
-                    <SelectItem key={app.id} value={String(app.id)}>
-                      {app.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+              <SelectContent>
+                <div className="p-2">
+                  <Input
+                    placeholder="Search repository..."
+                    value={repoSearch}
+                    onChange={(e) => setRepoSearch(e.target.value)}
+                    className="h-8"
+                  />
+                </div>
 
-            {/* REPO SELECT */}
-            {selectedApp && (
-              <div>
-                <p className="mb-2 font-semibold">Select Repository</p>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose Repository" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {repos.map((repo: any) => (
-                      <SelectItem key={repo.id} value={repo.full_name}>
-                        {repo.full_name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+                {filteredRepos.length === 0 && (
+                  <p className="px-3 py-2 text-sm text-muted-foreground">
+                    No repositories found
+                  </p>
+                )}
+
+                {filteredRepos.map((repo) => (
+                  <SelectItem key={repo.id} value={repo.full_name}>
+                    {repo.full_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-        )}
+
+          <div className="w-1/2 ">
+            <p className="mb-2 font-semibold">Branch</p>
+            <Input value={branch} placeholder="Default branch" disabled />{" "}
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 pt-2">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSelectedRepo(null);
+              setBranch("");
+            }}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            onClick={handleSave}
+            disabled={!selectedAppId || !selectedRepo}
+          >
+            Save
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

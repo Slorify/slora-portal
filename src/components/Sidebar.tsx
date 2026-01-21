@@ -43,9 +43,10 @@ const AppSidebar = () => {
           <SidebarContent>
             <div
               onClick={() => navigate("/")}
-              className="cursor-pointer px-4 py-5 text-lg font-extrabold tracking-tight"
+              className="cursor-pointer px-4 py-5 text-lg font-extrabold tracking-tight flex space-x-2"
             >
-              Ember<span className="text-primary"> Labs</span>
+              <img width={35} src="/logo.png" />
+              Slorify<span className="text-primary ml-1">Portal</span>
             </div>
 
             <SidebarGroup>

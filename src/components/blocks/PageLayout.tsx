@@ -20,7 +20,7 @@ const PageLayout = ({
   children,
 }: ILayout) => {
   return (
-    <main className="flex justify-center w-full p-6">
+    <main className="w-full h-full p-6 overflow-auto">
       <div className="w-full space-y-4 rounded-md bg-card p-4 border border-border">
         <section className="flex flex-col md:flex-row justify-between gap-4 rounded-md bg-muted p-8">
           <div>
@@ -33,10 +33,9 @@ const PageLayout = ({
           {actions && <div>{actions}</div>}
         </section>
 
-        {/* CONTENT */}
         <section
           className={cn(
-            "max-h-[70vh] overflow-auto rounded-md bg-muted p-4 py-8 border border-border",
+            "rounded-md bg-muted p-4 py-8 border border-border",
             className,
           )}
         >
@@ -46,5 +45,4 @@ const PageLayout = ({
     </main>
   );
 };
-
 export default PageLayout;
