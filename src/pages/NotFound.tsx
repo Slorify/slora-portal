@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const NotFound = () => {
@@ -8,12 +9,9 @@ const NotFound = () => {
       <p className="text-base-content/60 text-4xl font-bold">
         Ops! Page not found
       </p>
-      <button
-        onClick={() => navigate("/")}
-        className="btn btn-primary scale-150 mt-10"
-      >
+      <Button className="scale-120 mt-6" onClick={() => navigate("/")}>
         Go Back
-      </button>
+      </Button>
     </main>
   );
 };

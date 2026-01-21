@@ -1,81 +1,113 @@
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 import { IoFolderOpen } from "react-icons/io5";
 import { MdMonitorHeart } from "react-icons/md";
 import { SiTraefikproxy } from "react-icons/si";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
+import { FaGithubAlt } from "react-icons/fa6";
 
-const sidebarItems = [
+const homeItems = [
+  { label: "Workspaces", to: "/dashboard/workspaces", icon: IoFolderOpen },
+];
+
+const settingsItems = [
+  { label: "Proxy", to: "/dashboard/proxy", icon: SiTraefikproxy },
+
+  { label: "Monitoring", to: "/dashboard/specs", icon: MdMonitorHeart },
   {
-    label: "Workspaces",
-    to: "/dashboard/workspaces",
-    icon: IoFolderOpen,
-  },
-  {
-    label: "Proxy",
-    to: "/dashboard/proxy",
-    icon: SiTraefikproxy,
-  },
-  {
-    label: "Monitoring",
-    to: "/dashboard/specs",
-    icon: MdMonitorHeart,
+    label: "Git Providers",
+    to: "/dashboard/settings/gitapps",
+    icon: FaGithubAlt,
   },
 ];
 
-const Sidebar = () => {
+const AppSidebar = () => {
   const navigate = useNavigate();
   const { logout, loading } = useAuth();
+
   return (
-    <div className="flex w-full h-screen">
-      <aside className="flex flex-col justify-start py-5 h-full md:w-40 w-20 lg:w-60 border-r border-base-200 bg-base-300">
-        {/* Logo */}
-        <div
-          onClick={() => navigate("/")}
-          className="px-6 py-4 text-xl font-semibold"
-        >
-          Ember<span className="text-primary md:inline hidden "> Labs</span>
-        </div>
+    <SidebarProvider>
+      <div className="flex h-screen w-full">
+        <Sidebar>
+          <SidebarContent>
+            <div
+              onClick={() => navigate("/")}
+              className="cursor-pointer px-4 py-5 text-lg font-extrabold tracking-tight"
+            >
+              Ember<span className="text-primary"> Labs</span>
+            </div>
 
-        {/* Navigation */}
-        <nav className="px-3 flex flex-col justify-between items-start h-full">
-          <ul className="space-y-1">
-            {sidebarItems.map((item) => (
-              <li key={item.to}>
-                <NavLink
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `
-                  flex items-start gap-3 rounded-md md:pl-4 p-4 md:pr-18 py-2
-                  text-sm font-medium transition
-                  ${isActive
-                      ? "bg-primary text-primary-content"
-                      : "text-base-content/70 hover:bg-base-200 hover:text-base-content"
-                    }
-                `
-                  }
-                >
-                  <item.icon className="text-lg " />
-                  <span className=" md:block hidden">{item.label}</span>
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  <p className="text-muted-foreground text-xs">Home</p>
+                  {homeItems.map((item) => (
+                    <SidebarMenuItem key={item.to}>
+                      <NavLink to={item.to}>
+                        {({ isActive }) => (
+                          <SidebarMenuButton
+                            isActive={isActive}
+                            tooltip={item.label}
+                          >
+                            <item.icon className="size-5" />
+                            <span>{item.label}</span>
+                          </SidebarMenuButton>
+                        )}
+                      </NavLink>
+                    </SidebarMenuItem>
+                  ))}
 
-          <button
-            onClick={logout}
-            disabled={loading}
-            className="btn btn-primary self-center"
-          >
-            Logout
-          </button>
-        </nav>
-      </aside>
+                  <p className="text-muted-foreground text-xs mt-4">Settings</p>
+                  {settingsItems.map((item) => (
+                    <SidebarMenuItem key={item.to}>
+                      <NavLink to={item.to}>
+                        {({ isActive }) => (
+                          <SidebarMenuButton
+                            isActive={isActive}
+                            tooltip={item.label}
+                          >
+                            <item.icon className="size-5" />
+                            <span>{item.label}</span>
+                          </SidebarMenuButton>
+                        )}
+                      </NavLink>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
 
-      <main className="w-full h-full">
-        <Outlet />
-      </main>
-    </div>
+          <SidebarFooter>
+            <Button
+              variant="secondary"
+              onClick={logout}
+              disabled={loading}
+              className="w-full"
+            >
+              Logout
+            </Button>
+          </SidebarFooter>
+        </Sidebar>
+
+        {/* Page content */}
+        <main className="flex-1 overflow-hidden bg-background">
+          <Outlet />
+        </main>
+      </div>
+    </SidebarProvider>
   );
 };
 
-export default Sidebar;
+export default AppSidebar;

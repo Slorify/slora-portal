@@ -1,12 +1,21 @@
 import toast from "react-hot-toast";
-import { BsThreeDots } from "react-icons/bs";
 import { HiCube } from "react-icons/hi";
+import { BsThreeDots } from "react-icons/bs";
 import { MdOutlineOpenInNew } from "react-icons/md";
 import { PiPencil } from "react-icons/pi";
 import { TbTrash } from "react-icons/tb";
-import { useLocation, useNavigate } from "react-router-dom";
-import { deleteWorkspace } from "../../utils/workspaceApi";
 import { FaClockRotateLeft } from "react-icons/fa6";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { Card } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import { deleteWorkspace } from "../../utils/workspaceApi";
 
 type Props = {
   name: string;
@@ -28,65 +37,77 @@ function WorkspaceCard({
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     await toast.promise(deleteWorkspace(slug), {
-      loading: `Deleting workspace ${slug}..`,
+      loading: `Deleting workspace ${slug}...`,
       success: (res) => res.message,
-      error: (res) => res.messsage || "Failed to fetch workspace",
+      error: (res) => res?.message || "Failed to delete workspace",
     });
     refresh();
   };
 
   return (
-    <div
+    <Card
       onClick={() => navigate(`${pathname}/${slug}`)}
-      className="flex flex-col justify-between card bg-base-100 h-35 w-75 p-5"
+      className="cursor-pointer p-5 flex flex-col justify-between gap-4 transition hover:bg-muted"
     >
-      <div className="flex justify-between items-center">
-        <div className="flex gap-3 items-center">
-          <HiCube size={30} />
-          <h1 className="text-base-content text-xl font-bold">{name}</h1>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <HiCube size={28} className="text-primary" />
+          <h2 className="text-lg font-bold">{name}</h2>
         </div>
-        <div
-          onClick={(e) => e.stopPropagation()}
-          className="dropdown dropdown-end p-2"
-        >
-          <label tabIndex={0} className="cursor-pointer">
-            <BsThreeDots size={25} />
-          </label>
 
-          <ul
-            tabIndex={0}
-            className="menu dropdown-content bg-base-300 rounded-box z-1 w-42 p-2 shadow-sm font-semibold"
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            onClick={(e) => e.stopPropagation()}
+            className="rounded-md p-2 hover:bg-accent"
           >
-            <li className="text-success">
-              <a>
-                <MdOutlineOpenInNew size={20} /> Open
-              </a>
-            </li>
-            <li className="text-info">
-              <a>
-                <PiPencil size={20} /> Edit
-              </a>
-            </li>
-            <li onClick={handleDelete} className="text-error">
-              <a>
-                <TbTrash size={20} /> Delete
-              </a>
-            </li>
-          </ul>
-        </div>
+            <BsThreeDots size={22} />
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`${pathname}/${slug}`);
+              }}
+            >
+              <MdOutlineOpenInNew className="mr-2" />
+              Open
+            </DropdownMenuItem>
+
+            <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+              <PiPencil className="mr-2" />
+              Edit
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={handleDelete}
+              className="text-destructive focus:text-destructive"
+            >
+              <TbTrash className="mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
-      <p className="text-base-content/40">{description}</p>
+      {/* Description */}
+      <p className="text-sm text-muted-foreground line-clamp-2">
+        {description}
+      </p>
 
-      <div className="flex w-full justify-between">
-        <p className="text-base-content/60 flex items-center gap-2">
-          <FaClockRotateLeft /> {createdAt}
-        </p>
-        <p className="">{instances} Instances</p>
+      {/* Footer */}
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span className="flex items-center gap-2">
+          <FaClockRotateLeft />
+          {createdAt}
+        </span>
+        <span className="font-medium">{instances} Instances</span>
       </div>
-    </div>
+    </Card>
   );
 }
 

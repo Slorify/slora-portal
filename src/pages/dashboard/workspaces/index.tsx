@@ -21,25 +21,31 @@ interface Workspace {
 
 const Workspaces = () => {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchWorkspaces = async () => {
     const res = await getAllWorkspaces();
     setWorkspaces(res);
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchWorkspaces();
   }, []);
 
+  if (loading) {
+    return null;
+  }
   return (
     <PageLayout
       title="Workspaces"
       description="Create and manage your workspaces"
       icon={LuFolderPen}
       actions={<CreateWorkspaceDialog refresh={() => fetchWorkspaces()} />}
+      className="min-h-[60vh]"
     >
       {workspaces.length > 0 ? (
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  space-x-2 space-y-2">
+        <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 space-x-2 space-y-2">
           {workspaces.map((ws) => (
             <WorkspaceCard
               key={ws.id}

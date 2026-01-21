@@ -30,17 +30,23 @@ const Workspace = () => {
     name: "",
     description: "",
   });
+  const [loading, setLoading] = useState(true);
 
   const fetchContent = async () => {
     const instance = await getAllInstance(slug);
     setInstances(instance);
     const workspace = await getWorkspace(slug);
     setWorkspace(workspace);
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchContent();
   }, []);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <PageLayout
@@ -50,6 +56,7 @@ const Workspace = () => {
       actions={
         <CreateInstanceDialog refresh={() => fetchContent()} slug={slug} />
       }
+      className="min-h-[60vh]"
     >
       <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  space-x-2 space-y-2">
         {instances.map((i) => (

@@ -13,7 +13,7 @@ const Modal = (props: Props) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`${props.transparent ? "" : "bg-base-200"} rounded-box shadow p-6 transition-all ${props.open ? "scale-100 opacity-100" : "scale-125 opacity-0"}`}
+        className={`${props.transparent ? "bg-transparent" : "bg-secondary"} rounded-box shadow p-6 transition-all ${props.open ? "scale-100" : "scale-125 opacity-0"}`}
       >
         {props.children}
       </div>

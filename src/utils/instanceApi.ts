@@ -25,6 +25,20 @@ export const getAllInstance = async (slug: string) => {
   return res.data;
 };
 
+export const getInstance = async (slug: string, islug: string) => {
+  try {
+    const res = await axios.get(`${api}/workspace/testing/instance/test`, {
+      withCredentials: true,
+    });
+    return res.data.instance;
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      throw err.response?.data;
+    }
+    throw err;
+  }
+};
+
 export const createInstance = async (slug: string, data: Iinstance) => {
   try {
     const res = await axios.post(`${api}/workspace/${slug}/instance`, data, {

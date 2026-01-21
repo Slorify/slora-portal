@@ -1,75 +1,89 @@
 import { useState } from "react";
-import Modal from "../blocks/Modal";
-import { PiPlus } from "react-icons/pi";
 import toast from "react-hot-toast";
+import { PiPlus } from "react-icons/pi";
+
+import Modal from "../blocks/Modal";
 import { createWorkspace } from "../../utils/workspaceApi";
+
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { Label } from "../ui/label";
+import { Card } from "../ui/card";
 
 type Props = {
   refresh: () => void;
 };
 
-const CreateWorkspaceDialog = (props: Props) => {
+const CreateWorkspaceDialog = ({ refresh }: Props) => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     await toast.promise(createWorkspace({ name, description }), {
       loading: "Creating workspace...",
       success: (res) => res.message,
-      error: (res) => res.message,
+      error: (res) => res?.message || "Failed to create workspace",
     });
+
     setOpen(false);
-    props.refresh();
+    refresh();
   };
+
   return (
     <>
-      <button onClick={() => setOpen(true)} className="btn btn-primary">
-        <PiPlus className="text-2xl font-bold" />
+      <Button onClick={() => setOpen(true)}>
+        <PiPlus className="mr-2 text-xl" />
         Create Workspace
-      </button>
+      </Button>
+
       <Modal transparent open={open} onClose={() => setOpen(false)}>
-        <form onSubmit={handleSubmit}>
-          <fieldset className="fieldset scale-120 bg-base-200 border-base-300 rounded-box w-xs border p-4">
-            <legend className="fieldset-legend">Page details</legend>
+        <Card className="w-[380px] p-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <h2 className="text-lg font-bold">Create Workspace</h2>
+              <p className="text-sm text-muted-foreground">
+                Enter workspace details below
+              </p>
+            </div>
 
-            <label className="label">Name</label>
-            <input
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-              type="text"
-              className="input"
-              required
-              placeholder="Enter workspace name."
-            />
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Workspace name"
+                required
+              />
+            </div>
 
-            <label className="label">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => {
-                setDescription(e.target.value);
-              }}
-              className="textarea resize-none"
-              placeholder="Enter your workspace description."
-            />
-            <div className="mx-auto space-x-6">
-              <button
-                onClick={() => {
-                  setOpen(false);
-                }}
-                className="btn btn-neutral"
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Workspace description"
+                className="resize-none"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setOpen(false)}
               >
                 Cancel
-              </button>
-              <button type="submit" className="btn btn-primary">
-                Create
-              </button>
+              </Button>
+              <Button type="submit">Create</Button>
             </div>
-          </fieldset>
-        </form>
+          </form>
+        </Card>
       </Modal>
     </>
   );

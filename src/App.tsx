@@ -1,12 +1,13 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import NotFound from "./pages/NotFound";
-import Sidebar from "./components/Sidebar";
 import Login from "./pages/Login";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import "./index.css";
 import Workspace from "./pages/dashboard/workspaces/$slug";
 import Workspaces from "./pages/dashboard/workspaces";
 import InstancePage from "./pages/dashboard/instances/InstancePage";
+import AppSidebar from "./components/Sidebar";
+import GitProviderPage from "./pages/GitProviderPage";
 
 const App = () => {
   return (
@@ -19,7 +20,7 @@ const App = () => {
         </Route>
 
         <Route element={<ProtectedRoutes redirectUrl="/login" />}>
-          <Route element={<Sidebar />}>
+          <Route element={<AppSidebar />}>
             <Route path="/dashboard">
               <Route index element={<Navigate to="workspaces" replace />} />
               <Route path="workspaces" element={<Workspaces />} />
@@ -29,6 +30,10 @@ const App = () => {
                 element={<InstancePage />}
               />
               <Route path="user" element={<div>User</div>} />
+
+              <Route path="settings">
+                <Route path="gitapps" element={<GitProviderPage />} />
+              </Route>
             </Route>
           </Route>
         </Route>

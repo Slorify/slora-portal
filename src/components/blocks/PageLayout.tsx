@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
 
@@ -7,6 +8,7 @@ interface ILayout {
   icon: IconType;
   actions?: ReactNode;
   children: ReactNode;
+  className?: string;
 }
 
 const PageLayout = ({
@@ -14,22 +16,30 @@ const PageLayout = ({
   description,
   icon: Icon,
   actions,
+  className,
   children,
 }: ILayout) => {
   return (
-    <main className="flex justify-center items-center min-h-90 w-full p-10">
-      <div className="bg-base-300 rounded-box p-4 w-full space-y-2 h-full">
-        <section className="flex md:flex-row flex-col justify-between bg-base-200 p-10 w-full rounded-md">
+    <main className="flex justify-center w-full p-6">
+      <div className="w-full space-y-4 rounded-md bg-card p-4 border border-border">
+        <section className="flex flex-col md:flex-row justify-between gap-4 rounded-md bg-muted p-8">
           <div>
-            <h1 className="flex  text-2xl items-center font-extrabold gap-2 ">
-              <Icon size={30} />
+            <h1 className="flex items-center gap-2 text-xl font-extrabold">
+              <Icon size={24} className="text-primary" />
               {title}
             </h1>
-            <p className="text-base-content/70">{description}</p>
+            <p className="text-muted-foreground">{description}</p>
           </div>
-          <div>{actions}</div>
+          {actions && <div>{actions}</div>}
         </section>
-        <section className="flex items-start justify-center p-3 w-full h-[60vh] bg-base-200 rounded-md overflow-scroll">
+
+        {/* CONTENT */}
+        <section
+          className={cn(
+            "max-h-[70vh] overflow-auto rounded-md bg-muted p-4 py-8 border border-border",
+            className,
+          )}
+        >
           {children}
         </section>
       </div>
