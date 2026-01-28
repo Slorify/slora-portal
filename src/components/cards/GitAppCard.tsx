@@ -14,7 +14,7 @@ import { AvatarImage } from "@radix-ui/react-avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { deleteGitApp } from "@/utils/gitproviderApi";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 
 type Props = {
   name: string;
@@ -62,7 +62,7 @@ const GitAppCard = (props: Props) => {
               <Badge className="text-sm">Installation Required</Badge>
 
               <FingerprintIcon
-                onClick={() => navigate(`${props.installUrl}`)}
+                onClick={() => navigate({ to: `${props.installUrl}` })}
                 className="text-blue-400"
               />
             </>

@@ -9,6 +9,7 @@ interface ILayout {
   actions?: ReactNode;
   children: ReactNode;
   className?: string;
+  titleClassName?: string;
 }
 
 const PageLayout = ({
@@ -16,13 +17,19 @@ const PageLayout = ({
   description,
   icon: Icon,
   actions,
+  titleClassName,
   className,
   children,
 }: ILayout) => {
   return (
     <main className="w-full h-full p-6 overflow-auto">
       <div className="w-full space-y-4 rounded-md bg-card p-4 border border-border">
-        <section className="flex flex-col md:flex-row justify-between gap-4 rounded-md bg-muted p-8">
+        <section
+          className={cn(
+            "flex flex-col md:flex-row justify-between gap-4 rounded-md bg-muted p-8",
+            titleClassName,
+          )}
+        >
           <div>
             <h1 className="flex items-center gap-2 text-xl font-extrabold">
               <Icon size={24} className="text-primary" />

@@ -1,3 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
 import EmptyState from "@/components/blocks/EmptyState";
 import PageLayout from "@/components/blocks/PageLayout";
 import GitAppCard from "@/components/cards/GitAppCard";
@@ -7,7 +8,11 @@ import { timeAgo } from "@/utils/timeAgo";
 import { useEffect, useState } from "react";
 import { FaGithubAlt } from "react-icons/fa6";
 
-const GitProviderPage = () => {
+export const Route = createFileRoute("/dashboard/settings/gitapps/")({
+  component: RouteComponent,
+});
+
+function RouteComponent() {
   const [apps, setApps] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const fetchApps = async () => {
@@ -54,6 +59,4 @@ const GitProviderPage = () => {
       )}
     </PageLayout>
   );
-};
-
-export default GitProviderPage;
+}

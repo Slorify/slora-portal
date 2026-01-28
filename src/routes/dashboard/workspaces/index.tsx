@@ -1,5 +1,5 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { LuFolderPen, LuFolderSync } from "react-icons/lu";
-import { PiPlus } from "react-icons/pi";
 import WorkspaceCard from "../../../components/cards/WorkspaceCard";
 import { useEffect, useRef, useState } from "react";
 import { getAllWorkspaces } from "../../../utils/workspaceApi";
@@ -19,7 +19,11 @@ interface Workspace {
   };
 }
 
-const Workspaces = () => {
+export const Route = createFileRoute("/dashboard/workspaces/")({
+  component: RouteComponent,
+});
+
+function RouteComponent() {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -63,6 +67,4 @@ const Workspaces = () => {
       )}
     </PageLayout>
   );
-};
-
-export default Workspaces;
+}

@@ -10,13 +10,19 @@ import {
 } from "../utils/authApi";
 import toast from "react-hot-toast";
 import { AuthContext } from "./AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
+import { authStore } from "./authStore";
 
 const AuthProivder = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const isAuthenticated = !!user;
+
+  const syncUser = (user: AuthUser | null) => {
+    setUser(user);
+    authStore.setState({ user });
+  };
 
   const refresh = async () => {
     try {
@@ -33,13 +39,20 @@ const AuthProivder = ({ children }: { children: React.ReactNode }) => {
     refresh();
   }, []);
 
-  const login = async (data: IAuthLogin) => {
+  const login = async (data: IAuthLogin, redirect?: string) => {
     setLoading(true);
     try {
       const res = await loginAuth(data);
+
+      authStore.setState({ user: res.user });
+
+      setUser(res.user); // context
       toast.success(res.message);
-      await refresh();
-      navigate("/dashboard/workspaces");
+
+      navigate({
+        to: redirect ?? "/dashboard/workspaces",
+        replace: true,
+      });
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -52,7 +65,7 @@ const AuthProivder = ({ children }: { children: React.ReactNode }) => {
       const res = await registerAuth(data);
       toast.success(res.message);
       await refresh();
-      navigate("/login");
+      navigate({ to: "/login" });
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -67,7 +80,7 @@ const AuthProivder = ({ children }: { children: React.ReactNode }) => {
       toast.success(res.message);
       setUser(null);
       await refresh();
-      navigate("/login");
+      navigate({ to: "/login" });
     } catch (err: any) {
       toast.error(err.message);
     } finally {

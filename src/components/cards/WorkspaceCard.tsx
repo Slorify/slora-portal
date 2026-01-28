@@ -5,7 +5,7 @@ import { MdOutlineOpenInNew } from "react-icons/md";
 import { PiPencil } from "react-icons/pi";
 import { TbTrash } from "react-icons/tb";
 import { FaClockRotateLeft } from "react-icons/fa6";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 
 import { Card } from "@/components/ui/card";
 import {
@@ -49,7 +49,7 @@ function WorkspaceCard({
 
   return (
     <Card
-      onClick={() => navigate(`${pathname}/${slug}`)}
+      onClick={() => navigate({ to: `${pathname}/${slug}` })}
       className="cursor-pointer p-5 flex flex-col justify-between gap-4 transition hover:bg-muted"
     >
       {/* Header */}
@@ -71,7 +71,7 @@ function WorkspaceCard({
             <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`${pathname}/${slug}`);
+                navigate({ to: `${pathname}/${slug}` });
               }}
             >
               <MdOutlineOpenInNew className="mr-2" />

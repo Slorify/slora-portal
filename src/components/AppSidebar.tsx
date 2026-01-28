@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { IoFolderOpen } from "react-icons/io5";
 import { MdMonitorHeart } from "react-icons/md";
 import { SiTraefikproxy } from "react-icons/si";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../auth/useAuth";
 import { FaGithubAlt } from "react-icons/fa6";
 
@@ -22,9 +22,12 @@ const homeItems = [
 ];
 
 const settingsItems = [
-  { label: "Proxy", to: "/dashboard/proxy", icon: SiTraefikproxy },
-
-  { label: "Monitoring", to: "/dashboard/specs", icon: MdMonitorHeart },
+  { label: "Proxy", to: "/dashboard/settings/proxy", icon: SiTraefikproxy },
+  {
+    label: "Monitoring",
+    to: "/dashboard/settings/specs",
+    icon: MdMonitorHeart,
+  },
   {
     label: "Git Providers",
     to: "/dashboard/settings/gitapps",
@@ -42,20 +45,21 @@ const AppSidebar = () => {
         <Sidebar>
           <SidebarContent>
             <div
-              onClick={() => navigate("/")}
-              className="cursor-pointer px-4 py-5 text-lg font-extrabold tracking-tight flex space-x-2"
+              onClick={() => navigate({ to: "/" })}
+              className="cursor-pointer px-4 py-5 text-lg font-extrabold tracking-tight flex items-center gap-2"
             >
-              <img width={35} src="/logo.png" />
+              <img width={35} src="/logo.png" alt="Slorify" />
               Slorify<span className="text-primary ml-1">Portal</span>
             </div>
 
             <SidebarGroup>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  <p className="text-muted-foreground text-xs">Home</p>
+                  {/* HOME */}
+                  <p className="text-muted-foreground text-xs mb-1">Home</p>
                   {homeItems.map((item) => (
                     <SidebarMenuItem key={item.to}>
-                      <NavLink to={item.to}>
+                      <Link to={item.to} activeOptions={{ exact: true }}>
                         {({ isActive }) => (
                           <SidebarMenuButton
                             isActive={isActive}
@@ -65,14 +69,17 @@ const AppSidebar = () => {
                             <span>{item.label}</span>
                           </SidebarMenuButton>
                         )}
-                      </NavLink>
+                      </Link>
                     </SidebarMenuItem>
                   ))}
 
-                  <p className="text-muted-foreground text-xs mt-4">Settings</p>
+                  {/* SETTINGS */}
+                  <p className="text-muted-foreground text-xs mt-4 mb-1">
+                    Settings
+                  </p>
                   {settingsItems.map((item) => (
                     <SidebarMenuItem key={item.to}>
-                      <NavLink to={item.to}>
+                      <Link to={item.to}>
                         {({ isActive }) => (
                           <SidebarMenuButton
                             isActive={isActive}
@@ -82,7 +89,7 @@ const AppSidebar = () => {
                             <span>{item.label}</span>
                           </SidebarMenuButton>
                         )}
-                      </NavLink>
+                      </Link>
                     </SidebarMenuItem>
                   ))}
                 </SidebarMenu>
@@ -90,6 +97,7 @@ const AppSidebar = () => {
             </SidebarGroup>
           </SidebarContent>
 
+          {/* FOOTER */}
           <SidebarFooter>
             <Button
               variant="secondary"
@@ -102,7 +110,7 @@ const AppSidebar = () => {
           </SidebarFooter>
         </Sidebar>
 
-        {/* Page content */}
+        {/* MAIN CONTENT */}
         <main className="flex-1 overflow-hidden bg-background">
           <Outlet />
         </main>

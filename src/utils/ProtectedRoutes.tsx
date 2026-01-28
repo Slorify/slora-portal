@@ -1,6 +1,5 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
-import Loading from "../components/Loading";
 
 interface ProtectedRoutesProps {
   redirectUrl: string;

@@ -1,12 +1,12 @@
-import { useParams } from "react-router-dom";
-import { getWorkspace } from "../../../utils/workspaceApi";
+import { createFileRoute, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { getAllInstance } from "../../../utils/instanceApi";
-import PageLayout from "../../../components/blocks/PageLayout";
+import { getAllInstance } from "@/utils/instanceApi";
 import { FaBox } from "react-icons/fa6";
-import InstanceCard from "../../../components/cards/InstanceCard";
-import CreateInstanceDialog from "../../../components/dialogs/CreateInstanceDialog";
-import { timeAgo } from "../../../utils/timeAgo";
+import InstanceCard from "@/components/cards/InstanceCard";
+import { timeAgo } from "@/utils/timeAgo";
+import PageLayout from "@/components/blocks/PageLayout";
+import CreateInstanceDialog from "@/components/dialogs/CreateInstanceDialog";
+import { getWorkspace } from "@/utils/workspaceApi";
 
 interface IWorkspace {
   name: string;
@@ -22,9 +22,12 @@ interface Iinstance {
   createdAt: string;
 }
 
-const Workspace = () => {
-  let { slug } = useParams();
-  slug = String(slug);
+export const Route = createFileRoute("/dashboard/workspaces/$slug/")({
+  component: RouteComponent,
+});
+
+function RouteComponent() {
+  const { slug } = Route.useParams();
   const [instances, setInstances] = useState<Iinstance[]>([]);
   const [workspace, setWorkspace] = useState<IWorkspace>({
     name: "",
@@ -63,6 +66,7 @@ const Workspace = () => {
           <InstanceCard
             key={i.id}
             slug={i.slug}
+            cslug={slug}
             name={i.name}
             image={i.image}
             createdAt={timeAgo(i.createdAt)}
@@ -71,6 +75,4 @@ const Workspace = () => {
       </div>
     </PageLayout>
   );
-};
-
-export default Workspace;
+}

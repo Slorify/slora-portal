@@ -1,7 +1,6 @@
-// src/components/TopLoader.tsx
 import LoadingBar from "react-top-loading-bar";
 import { useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "@tanstack/react-router";
 
 const TopLoader = () => {
   const ref = useRef<any>(null);
