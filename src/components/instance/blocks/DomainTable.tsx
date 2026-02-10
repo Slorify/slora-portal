@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Globe, ShieldCheck } from "lucide-react";
+import { Plus, Trash2, Globe, ShieldCheck, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { Badge } from "@/components/ui/badge";
@@ -97,6 +97,13 @@ const DomainTable = ({ params }: { params: Iparams }) => {
     toast.success(`Removed ${row.domain} from UI`);
   };
 
+  const domainHref = (domain: string) => {
+    if (domain.startsWith("http://") || domain.startsWith("https://")) {
+      return domain;
+    }
+    return `https://${domain}`;
+  };
+
   return (
     <Card>
       <CardHeader className="pb-4">
@@ -157,7 +164,7 @@ const DomainTable = ({ params }: { params: Iparams }) => {
                 <TableHead>Name</TableHead>
                 <TableHead>Domain</TableHead>
                 <TableHead>Port</TableHead>
-                <TableHead className="w-20 text-right">Actions</TableHead>
+                <TableHead className="w-28 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -175,14 +182,32 @@ const DomainTable = ({ params }: { params: Iparams }) => {
                   <TableCell className="font-mono text-sm">{row.domain}</TableCell>
                   <TableCell>{row.port}</TableCell>
                   <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 text-destructive"
-                      onClick={() => handleRemoveDomain(row)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex justify-end gap-1">
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                      >
+                        <a
+                          href={domainHref(row.domain)}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          title="Open domain"
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive"
+                        onClick={() => handleRemoveDomain(row)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
