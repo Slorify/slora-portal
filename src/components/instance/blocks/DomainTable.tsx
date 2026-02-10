@@ -70,14 +70,15 @@ const DomainTable = ({ params }: { params: Iparams }) => {
             {
               name: form.name.trim(),
               domain: form.domain.trim(),
-              port: String(port),
+              port,
             },
           ],
         }),
         {
           loading: "Adding domain...",
           success: "Domain added",
-          error: "Failed to add domain",
+          error: (err: any) =>
+            err?.message ?? err?.messsage ?? "Failed to add domain",
         },
       );
 
@@ -89,7 +90,7 @@ const DomainTable = ({ params }: { params: Iparams }) => {
     }
   };
 
-  const handleRemoveDomain = async (row: DomainRow) => {
+  const handleRemoveDomain = (row: DomainRow) => {
     // Current backend update endpoint does not expose domain deletion.
     // Keep UX explicit and immediate by removing from table state.
     setDomains((prev) => prev.filter((d) => d.id !== row.id));

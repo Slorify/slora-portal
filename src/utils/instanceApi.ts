@@ -14,7 +14,7 @@ interface Iinstance {
   domains?: {
     name: string;
     domain: string;
-    port: string;
+    port: number;
   };
 }
 
