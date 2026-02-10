@@ -7,7 +7,6 @@ import { routeTree } from "./routeTree.gen";
 import { Toaster } from "react-hot-toast";
 import { Check, X, Loader2, Info } from "lucide-react";
 
-import AuthProivder from "./auth/AuthProivder";
 
 const router = createRouter({
   routeTree,

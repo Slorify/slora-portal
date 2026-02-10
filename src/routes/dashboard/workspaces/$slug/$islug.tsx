@@ -4,7 +4,6 @@ import { DeleteIcon } from "@/components/ui/delete";
 import { FilePenLineIcon } from "@/components/ui/file-pen-line";
 import { deleteInstance, getInstance } from "@/utils/instanceApi";
 import { BoxIcon } from "lucide-react";
-import { useEffect, useState } from "react";
 import { InstanceContent } from "@/components/instance/InstanceContent";
 import { useInstanceStatus } from "@/hooks/useInstanceStatus";
 import {

@@ -14,6 +14,7 @@ import { FaGithub } from "react-icons/fa6";
 import { getGitRepoByInstance, updateGitUrl } from "@/utils/instanceApi";
 import toast from "react-hot-toast";
 import type { Iparams } from "../InstanceContent";
+import { Link } from "@tanstack/react-router";
 
 const GitProvider = ({ params }: { params: Iparams }) => {
   const { slug, islug } = params;

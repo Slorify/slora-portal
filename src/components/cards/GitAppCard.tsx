@@ -62,7 +62,7 @@ const GitAppCard = (props: Props) => {
               <Badge className="text-sm">Installation Required</Badge>
 
               <FingerprintIcon
-                onClick={() => navigate({ to: `${props.installUrl}` })}
+                onClick={() => navigate({  href: `${props.installUrl}` })}
                 className="text-blue-400"
               />
             </>

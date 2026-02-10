@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import {Link} from  "@tanstack/react-router"
 import { useState, type FormEvent } from "react";
 import { useAuth } from "../auth/useAuth";
 import Loading from "../components/Loading";
