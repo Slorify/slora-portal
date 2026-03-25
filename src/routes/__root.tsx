@@ -3,6 +3,7 @@ import { Outlet, createRootRoute, redirect } from "@tanstack/react-router";
 import TopLoader from "@/components/TopLoader";
 import AuthProivder from "@/auth/AuthProivder";
 import { verifySession } from "@/auth/verifyAuth";
+import { checkStartup } from "@/lib/checkStartup";
 
 export const Route = createRootRoute({
   async beforeLoad({ location }) {
@@ -13,6 +14,12 @@ export const Route = createRootRoute({
     }
 
     if (authPaths.includes(location.pathname)) {
+      if (!isAuthenticated) {
+        const check = await checkStartup();
+        if (check?.done == false) {
+          throw redirect({ to: "/startup" });
+        }
+      }
       if (isAuthenticated) {
         throw redirect({ to: "/dashboard/workspaces" });
       }

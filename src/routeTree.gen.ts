@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
+import { Route as StartupIndexRouteImport } from './routes/startup/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
@@ -23,6 +24,11 @@ import { Route as DashboardWorkspacesSlugIslugRouteImport } from './routes/dashb
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StartupIndexRoute = StartupIndexRouteImport.update({
+  id: '/startup/',
+  path: '/startup/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterIndexRoute = RegisterIndexRouteImport.update({
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/login/': typeof LoginIndexRoute
   '/register/': typeof RegisterIndexRoute
+  '/startup/': typeof StartupIndexRoute
   '/dashboard/workspaces/': typeof DashboardWorkspacesIndexRoute
   '/dashboard/workspaces/$slug/$islug': typeof DashboardWorkspacesSlugIslugRoute
   '/dashboard/settings/gitapps/': typeof DashboardSettingsGitappsIndexRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/login': typeof LoginIndexRoute
   '/register': typeof RegisterIndexRoute
+  '/startup': typeof StartupIndexRoute
   '/dashboard/workspaces': typeof DashboardWorkspacesIndexRoute
   '/dashboard/workspaces/$slug/$islug': typeof DashboardWorkspacesSlugIslugRoute
   '/dashboard/settings/gitapps': typeof DashboardSettingsGitappsIndexRoute
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/login/': typeof LoginIndexRoute
   '/register/': typeof RegisterIndexRoute
+  '/startup/': typeof StartupIndexRoute
   '/dashboard/workspaces/': typeof DashboardWorkspacesIndexRoute
   '/dashboard/workspaces/$slug/$islug': typeof DashboardWorkspacesSlugIslugRoute
   '/dashboard/settings/gitapps/': typeof DashboardSettingsGitappsIndexRoute
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/login/'
     | '/register/'
+    | '/startup/'
     | '/dashboard/workspaces/'
     | '/dashboard/workspaces/$slug/$islug'
     | '/dashboard/settings/gitapps/'
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/register'
+    | '/startup'
     | '/dashboard/workspaces'
     | '/dashboard/workspaces/$slug/$islug'
     | '/dashboard/settings/gitapps'
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/login/'
     | '/register/'
+    | '/startup/'
     | '/dashboard/workspaces/'
     | '/dashboard/workspaces/$slug/$islug'
     | '/dashboard/settings/gitapps/'
@@ -155,6 +167,7 @@ export interface RootRouteChildren {
   DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   LoginIndexRoute: typeof LoginIndexRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
+  StartupIndexRoute: typeof StartupIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -164,6 +177,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/startup/': {
+      id: '/startup/'
+      path: '/startup'
+      fullPath: '/startup/'
+      preLoaderRoute: typeof StartupIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register/': {
@@ -260,6 +280,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRouteRoute: DashboardRouteRouteWithChildren,
   LoginIndexRoute: LoginIndexRoute,
   RegisterIndexRoute: RegisterIndexRoute,
+  StartupIndexRoute: StartupIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
